@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+  <title>AngularJs Demo</title>
+  <link href = "bootstrap.css" rel="stylesheet" />
+  <link href = "bootstrap-theme.css" rel="stylesheet" />
+  <script src="angular.js"></script>
+  <script>
+    var myApp = angular.module("exampleApp",[]);
+    myApp.constant("projectUrl","http://localhost:8000/api/projects/");
+    myApp.constant("waveUrl","http://localhost:8000/api/waves/");
+    myApp.constant("shopUrl","http://localhost:8000/api/shops/");
+    
+    myApp.controller("breadCtrl",function($scope,$http,projectUrl,waveUrl,shopUrl){
+        $scope.data = {};
+             
+        $scope.readData=function(entity){
+          var url="";  
+          if(entity=="project")
+            url = projectUrl;
+          else if(entity=="wave")
+            url = waveUrl;
+          else
+            url = shopUrl;  
+          alert("url:" + url);
+          
+          $http.get(url)
+            .success(function(data){            
+              $scope.data.projects = data.results;
+            })   
+            .error(function(error){ 
+              $scope.data.error = error;
+            });  
+        };             
+    }
+                        
+        
+  </script> 
+</head>
+<body>
+    <div class="panel">
+        <div class="page-header">
+            <h3>AngularJs App</h3>
+        </div>
+        <div ng-controller="breadCtrl">            
+           <div class="alert alert-danger" ng-show="data.error">
+              Error ({{data.error.status}}).The projects data was not loaded.
+              <a href="/site_media/testPage.html" class="alert-link">Click here to try again</a>
+           </div>
+           <div class="well" ng-repeat="item in data.projects" ng-hide="data.error">             
+                <span>{{item.id}}</span>
+                <strong>{{item.name}}</strong>
+           </div>
+           <button ng-click="readData('wave')" class="btn btn-success pull-right">Read</button>
+        </div>
+ 
+    </div>
+</body> 
+</html>
