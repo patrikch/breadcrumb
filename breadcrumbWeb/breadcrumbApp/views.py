@@ -11,7 +11,8 @@ class DefaultMixin(object):
     )
 
     permission_classes = (
-        permissions.IsAuthenticated,
+        #permissions.IsAuthenticated,
+        permissions.AllowAny,
     )
     paginate_by = 25
     paginate_by_param = "page_size"
