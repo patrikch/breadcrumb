@@ -43,7 +43,7 @@
                <span id="breadcrumb">
                    <span ng-repeat="br in data.breadcrumbs">
                        <a href="." id="{{br.id}}">{{br.name}}</a>
-                       <span> - </span>
+                       <span ng-if="$last==false"> > </span>
                    </span>
                </span> 
                <br/><br/>
