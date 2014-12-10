@@ -14,7 +14,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return {
             "self":reverse("project-detail",kwargs={"pk":obj.pk},
-                           request=request),            
+                           request=request),
+            'waves': reverse('wave-list',request=request) +
+            '?project={}'.format(obj.pk),
         }
 
 class WaveSerializer(serializers.ModelSerializer):
@@ -29,7 +31,9 @@ class WaveSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return {
             "self":reverse("wave-detail",kwargs={"pk":obj.pk},
-                           request=request),            
+                           request=request),
+            'shops': reverse('shop-list',request=request) +
+            '?wave={}'.format(obj.pk),
         }
 
 class ShopSerializer(serializers.ModelSerializer):
