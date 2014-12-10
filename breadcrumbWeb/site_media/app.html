@@ -9,24 +9,93 @@
   <script>
     var model = {        
         items: [
-            {id:1,name:"proj_1"},
-            {id:2,name:"proj_2"}
+            
         ],
         breadcrumbs: [
-            {id:"p",name:"Projects"},
-            {id:"p1",name:"Project 1"},
-            {id:"w1",name:"Wave 1"}
+            {id:"r",name:"Projects"}            
         ]
     };
       
     var myApp = angular.module("exampleApp",[]);
     myApp.constant("projectUrl","http://localhost:8000/api/projects/");
-    myApp.constant("waveUrl","http://localhost:8000/api/waves/");
-    myApp.constant("shopUrl","http://localhost:8000/api/shops/");
+    myApp.constant("waveUrl","http://localhost:8000/api/waves/?project=");
+    myApp.constant("shopUrl","http://localhost:8000/api/shops/?wave=");
     
-    myApp.controller("breadCtrl",function($scope){        
+    myApp.controller("breadCtrl",function($scope,$http,projectUrl,waveUrl,shopUrl){        
              
         $scope.data = model;
+        
+        $scope.clickBread = function(item){
+            //1.vymaz vsechny linky, ktere jsou za timto
+            var index = $scope.data.breadcrumbs.indexOf(item);
+            var last;
+            for(i=$scope.data.breadcrumbs.length-1;i>index;i--){
+                last = $scope.data.breadcrumbs.pop();
+            }            
+            //2.url a idPrefix
+            var tmp = $scope.getUrl(item);
+            var url = tmp[0];
+            var idPrefix = tmp[1];                        
+            //3.nacti nove menu + vyres id
+            $http.get(url)
+              .success(function(data){            
+                  $scope.data.items = [];
+                  angular.forEach(data.results,function(it){
+                      it.id = idPrefix + it.id;
+                      $scope.data.items.push(it);
+                  });                  
+              })   
+              .error(function(error){ 
+                $scope.data.error = error;
+              });
+        };
+        
+        $scope.clickMenu = function(item){
+           //1.pridej item do breadcrumbu, neni-li shop
+           if(item.id.charAt(0)!="s"){
+               $scope.data.breadcrumbs.push(item);
+           }
+           else{
+               alert("shop");
+               return;
+           }
+           //2.url a idPrefix
+            var tmp = $scope.getUrl(item);
+            var url = tmp[0];
+            var idPrefix = tmp[1];                        
+            //3.nacti nove menu + vyres id
+            $http.get(url)
+              .success(function(data){            
+                  $scope.data.items = [];
+                  angular.forEach(data.results,function(it){
+                      it.id = idPrefix + it.id;
+                      $scope.data.items.push(it);
+                  });                  
+              })   
+              .error(function(error){ 
+                $scope.data.error = error;
+              });
+        };
+        $scope.getUrl = function(item){
+            //1.zkonstruuj url
+            var url;
+            var idPrefix = "";
+            if(item.id=="r"){
+                url = projectUrl;
+                idPrefix = "p"; 
+            }                
+            else if(item.id.charAt(0)=="p")
+            {
+                url = waveUrl + item.id.substring(1);
+                idPrefix = "w";                
+            }            
+            else
+            {
+                url = shopUrl + item.id.substring(1);
+                idPrefix = "s";                
+            }
+            return [url,idPrefix];
+        };        
     });
                         
         
@@ -41,14 +110,14 @@
             <div class="container">
                <span id="breadcrumb">
                    <span ng-repeat="br in data.breadcrumbs">
-                       <a href="." id="{{br.id}}">{{br.name}}</a>
+                       <a href="#" id="{{br.id}}" ng-click="clickBread(br);$event.stopPropagation();">{{br.name}}</a>
                        <span ng-if="$last==false"> > </span>
                    </span>
                </span> 
                <br/><br/>
                <div id="menu">
                    <div ng-repeat="item in data.items">
-                     <a href="." id="{{item.id}}">{{item.name}}</a>
+                     <a href="#" id="{{item.id}}" ng-click="clickMenu(item);$event.stopPropagation();">{{item.name}}</a>
                    </div>        
                </div>                                                 
            </div>          
