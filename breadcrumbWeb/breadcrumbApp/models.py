@@ -14,10 +14,10 @@ class Wave(models.Model):
         return self.name
 
 class Shop(models.Model):
-    shopName = models.CharField(max_length = 100)
+    name = models.CharField(max_length = 100)
     district = models.CharField(max_length = 3)
     wave = models.ForeignKey(Wave)
 
     def __str__(self):
-        return self.shopName + " (" + self.district + ")"
+        return self.name + " (" + self.district + ")"
     

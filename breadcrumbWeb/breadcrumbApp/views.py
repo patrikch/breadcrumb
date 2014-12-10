@@ -41,10 +41,10 @@ class WaveViewSet(DefaultMixin,viewsets.ModelViewSet):
 
 class ShopViewSet(DefaultMixin,viewsets.ModelViewSet):
 
-    queryset = Shop.objects.order_by("shopName")
+    queryset = Shop.objects.order_by("name")
     serializer_class = ShopSerializer
     search_fields = ('id', )
-    ordering_fields = ('shopName',"district", )
+    ordering_fields = ('name',"district", )
     filter_class = ShopFilter
 
 

@@ -42,7 +42,7 @@ class ShopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ("id","shopName","district","links",)
+        fields = ("id","name","district","links",)
 
     def get_links(self,obj):
         request = self.context["request"]

@@ -12,4 +12,4 @@ class ShopFilter(django_filters.FilterSet):
 
     class Meta:
         model = Shop
-        fields = ("id","shopName","wave",)
+        fields = ("id","name","wave",)
